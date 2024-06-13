@@ -26,6 +26,10 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
     public User updateUser(Long id, User userDetails) {
         User user = userRepository.findById(id).orElse(null);
         if (user != null) {

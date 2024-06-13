@@ -1,8 +1,13 @@
 package com.avoworld.springbe.controller;
 
+import com.avoworld.springbe.exception.PostNotFoundException;
 import com.avoworld.springbe.model.Post;
 import com.avoworld.springbe.service.PostService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,7 +19,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
+
 public class PostController {
+    private static final Logger logger = LoggerFactory.getLogger(PostController.class);
+
     @Autowired
     private PostService postService;
 
@@ -24,8 +32,13 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public Post getPostById(@PathVariable Long postId) {
-        return postService.getPostById(postId);
+    public Post getPostById(@PathVariable("postId") Long postId) {
+        logger.debug("Getting post with ID: {}", postId);
+        Post post = postService.getPostById(postId);
+        if (post == null) {
+            throw new PostNotFoundException(postId);
+        }
+        return post;
     }
 
     @PostMapping
@@ -44,7 +57,7 @@ public class PostController {
     }
 
     @PutMapping("/{postId}/views")
-    public void incrementViews(@PathVariable Long postId) {
+    public void incrementViews(@PathVariable("postId") Long postId) {
         postService.incrementViews(postId);
     }
 
@@ -62,5 +75,15 @@ public class PostController {
             e.printStackTrace();
             return "Failed to upload";
         }
+    }
+
+    @GetMapping("/{postId}/checkEditPermission")
+    public boolean checkEditPermission(@PathVariable Long postId, @RequestParam Long userId) {
+        return postService.hasEditPermission(postId, userId);
+    }
+
+    @ExceptionHandler(PostNotFoundException.class)
+    public ResponseEntity<String> handlePostNotFound(PostNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

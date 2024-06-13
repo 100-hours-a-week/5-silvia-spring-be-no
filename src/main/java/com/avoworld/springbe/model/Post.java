@@ -6,6 +6,35 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "community_post")
 public class Post {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "article")
+    private String article;
+
+    @Column(name = "post_picture")
+    private String postPicture;
+
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "create_at")
+    private LocalDateTime createAt;
+
+    @Column(name = "update_at")
+    private LocalDateTime updateAt;
+
+    @Column(name = "views")
+    private int views;
+
+    @Column(name = "likes")
+    private int likes;
+
+
     public Long getId() {
         return id;
     }
@@ -78,18 +107,6 @@ public class Post {
         this.likes = likes;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String title;
-    private String article;
-    private String postPicture;
-    private Long userId;
-    private LocalDateTime createAt;
-    private LocalDateTime updateAt;
-    private int views;
-    private int likes;
 
 
 }

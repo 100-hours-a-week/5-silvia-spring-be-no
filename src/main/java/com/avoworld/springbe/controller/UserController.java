@@ -3,6 +3,8 @@ package com.avoworld.springbe.controller;
 import com.avoworld.springbe.model.User;
 import com.avoworld.springbe.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -76,14 +79,24 @@ public class UserController {
         }
     }
 
+//    @PostMapping("/login")
+//    public String login(@RequestBody User loginUser) {
+//        User user = userService.getUserById(loginUser.getUserId());
+//        if (user != null && user.getPassword().equals(loginUser.getPassword())) {
+//            return "Login successful";
+//        }
+//        return "Invalid credentials";
+//    }
+
     @PostMapping("/login")
-    public String login(@RequestBody User loginUser) {
-        User user = userService.getUserById(loginUser.getUserId());
+    public ResponseEntity<?> login(@RequestBody User loginUser) {
+        User user = userService.getUserByEmail(loginUser.getEmail()); // Assuming you have a method to get user by email
         if (user != null && user.getPassword().equals(loginUser.getPassword())) {
-            return "Login successful";
+            return ResponseEntity.ok().body(Collections.singletonMap("success", true));
         }
-        return "Invalid credentials";
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("success", false));
     }
+
 
     @PostMapping("/logout")
     public String logout() {

@@ -8,34 +8,41 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/posts/{postId}/comments")
+@RequestMapping("/api")
 public class CommentController {
+
     @Autowired
     private CommentService commentService;
 
-    @GetMapping
-    public List<Comment> getCommentsByPostId(@PathVariable Long postId) {
+    @GetMapping("/posts/{postId}/comments")
+    public List<Comment> getCommentsByPostId(@PathVariable("postId") Long postId) {
         return commentService.getCommentsByPostId(postId);
     }
 
-    @GetMapping("/{commentId}")
-    public Comment getCommentById(@PathVariable Long postId, @PathVariable Long commentId) {
+    @GetMapping("/comments")
+    public List<Comment> getAllComments() {
+        return commentService.getAllComments();
+    }
+
+    @GetMapping("/posts/{postId}/comments/{commentId}")
+    public Comment getCommentById(@PathVariable("postId") Long postId, @PathVariable("commentId") Long commentId) {
         return commentService.getCommentById(commentId);
     }
 
-    @PostMapping
-    public Comment createComment(@PathVariable Long postId, @RequestBody Comment comment) {
+    @PostMapping("/posts/{postId}/comments")
+    public Comment createComment(@PathVariable("postId") Long postId, @RequestBody Comment comment) {
         comment.setPostId(postId);
         return commentService.createComment(comment);
     }
 
-    @PutMapping("/{commentId}")
-    public Comment updateComment(@PathVariable Long postId, @PathVariable Long commentId, @RequestBody Comment commentDetails) {
+    @PutMapping("/posts/{postId}/comments/{commentId}")
+    public Comment updateComment(@PathVariable("postId") Long postId, @PathVariable("commentId") Long commentId, @RequestBody Comment commentDetails) {
+        commentDetails.setPostId(postId);
         return commentService.updateComment(commentId, commentDetails);
     }
 
-    @DeleteMapping("/{commentId}")
-    public void deleteComment(@PathVariable Long postId, @PathVariable Long commentId) {
+    @DeleteMapping("/posts/{postId}/comments/{commentId}")
+    public void deleteComment(@PathVariable("postId") Long postId, @PathVariable("commentId") Long commentId) {
         commentService.deleteComment(commentId);
     }
 }
