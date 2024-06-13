@@ -1,21 +1,11 @@
 package com.avoworld.springbe.model;
 
-import java.io.Serializable;
-
-public class AuthenticationRequest implements Serializable {
+public class AuthenticationRequest {
 
     private String username;
     private String password;
 
-    // default constructor for JSON Parsing
-    public AuthenticationRequest() {
-    }
-
-    public AuthenticationRequest(String username, String password) {
-        this.setUsername(username);
-        this.setPassword(password);
-    }
-
+    // Getters and Setters
     public String getUsername() {
         return username;
     }
